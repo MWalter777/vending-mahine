@@ -16,6 +16,7 @@
             <button class="btn btn-outline-success" onclick="dispatchOrder()">Create</button>
         </div>
         <div class="dispatching" id="dispatching">
+            <div id="load"></div>
             <strong>Dispaching</strong>
             <strong id="dispatching-id">Dispaching id</strong>
             <strong id="time-dispatching-id">Time: </strong>
@@ -55,6 +56,7 @@
 
         $(document).ready(function () {
             createMachine();
+            $('#load').hide();
         });
 
         function createMachine() {
@@ -147,6 +149,7 @@
 
         async function dispatchOrder(){
             creating = true;
+            $('#load').show();
             for (let i = 0; i < order.length; i++) {
                 let val = order[i];
                 let time =val.time*val.quantity;
@@ -166,6 +169,7 @@
                 $(itemDelete).remove();
             }
             creating = false;
+            $('#load').hide();
             dispatched = [...dispatched, ...order];
             order = [];
         }
