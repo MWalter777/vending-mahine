@@ -1,0 +1,42 @@
+﻿body{
+    background-color: #eee;
+}
+
+.body-content{
+    background-color: #FFF;
+    border-radius: 7px;
+}
+
+.machine{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.images{
+    display: flex;
+    flex-direction: column;
+    max-width: 30%;
+}
+
+.vending, your-order{
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    justify-content: flex-end;
+    margin-right: 2rem;
+    margin-top: 2rem;
+}
+
+.vending img{
+	padding: 10px;
+	filter: drop-shadow(-3px -3px 2px rgba(255,255,255,0.3))
+			drop-shadow(5px  5px 5px rgba(0,0,0,0.2))
+			drop-shadow(15px 15px 15px rgba(0,0,0,0.2));
+}
+
+.vending strong{
+    margin: auto;
+    padding-bottom: 10px;
+}
+
