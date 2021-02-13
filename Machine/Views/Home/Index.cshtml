@@ -10,7 +10,15 @@
         <div class="order-title">
             <h3 class="text-center">Your order</h3>
         </div>
-        <div class="order" id="item-order">
+        <div class="order">
+            <div class="order" id="item-order">
+            </div>
+            <button class="btn btn-outline-success" onclick="dispatchOrder()">Create</button>
+        </div>
+        <div class="dispatching" id="dispatching">
+            <strong>Dispaching</strong>
+            <strong id="dispatching-id">Dispaching id</strong>
+            <strong id="time-dispatching-id">Time: </strong>
         </div>
     </div>
 </div>
@@ -18,27 +26,29 @@
 @section scripts {
     <script>
         var order = [];
+        var dispatched = [];
+        var creating = false;
         var data = [
             {
                 id: 1,
                 image: "https://userscontent2.emaze.com/images/bc6288eb-5280-4ad6-bee9-198faa85ab48/6dd8cd2ebc272b5907a97c2a6d94b5fc.png",
                 name: "Cocacola",
                 price: 1.5,
-                time: 2000
+                time: 2
             },
             {
                 id: 2,
                 image: "https://images.vexels.com/media/users/3/190236/isolated/preview/9a2eb2186a42d9d0d802596a43aa7d43-papas-fritas-kawaii-planas-by-vexels.png",
                 name: "Potatoes",
                 price: 0.5,
-                time: 5000
+                time: 5
             },
             {
                 id: 3,
                 image: "https://lh3.googleusercontent.com/proxy/MrgNQlqJ35lQO50qbv1TxWm5vnORKyf34IRBdG4rVj0bhQbCO-lr-CNuW-xfZTDJGbkN1daXUECx_LBsE50RGEoto_Fi51W5QJfgpCAvbrm1iuT2wYzPGBc-QNQ",
                 name: "Coffe",
                 price: 1.2,
-                time: 7000
+                time: 7
             },
         ];
 
@@ -62,36 +72,122 @@
         }
 
         function orderItem(id) {
-            let orderI = order.filter((d)=>d.id === id)[0];
-            let value = data.filter((d) =>d.id === id)[0];
-            if (orderI) {
-                console.log(orderI);
-            } else {
-                let obj = {
-                    id: orderI.id,
-                    name: orderI.name,
-                    quantity: 1,
-                    time: orderI.time,
-                    price: orderI.price
-                };
-                order.push(obj);
+            if (creating === false) {
+                let orderI = order.filter((d) =>d.id === id)[0];
+                if (orderI) {
+                    order = order.map((val) => {
+                        if (val.id === id){
+                            val.quantity = val.quantity + 1;
+                        }
+                        return val;
+                    });
+                    updateOrder(id);
+                } else {
+                    let value = data.filter((d) =>d.id === id)[0];
+                    if (value) {
+                        let obj = {
+                            id: value.id,
+                            name: value.name,
+                            quantity: 1,
+                            time: value.time,
+                            price: value.price
+                        };
+                        order.push(obj);
+                        createOrder(id);
+                    }
+                }
+            }
+        }
+
+        function updateOrder(id) {
+            let value = order.filter((d) =>d.id === id)[0];
+            let textId = `#order-item-id-${id}`;
+            let timeID = `#order-item-time-id-${id}`;
+            console.log(textId);
+            if (value) {
+                $(textId).text(value.quantity);
+                $(timeID).text(value.quantity * value.time + 's');
             }
         }
 
         function createOrder(id) {
-            console.log(value);
+            let value = order.filter((d) =>d.id === id)[0];
             let tag = `
-                <div class ="item-order">
-                    <strong>${value.name} ${'$' + value.price}</strong>
-                    <button class ="btn btn-outline-danger" onclick="deleteItem(${value.id})"> <i class ="fa fa-trash"></i> </button>
-                </div>
-            `;
+            <div class ="item-order" id="item-order-id-${id}">
+                <strong>${value.name} ${'$' + value.price}</strong>
+                <strong>Quantity: <span id="order-item-id-${id}">${value.quantity}</span></strong>
+                <strong>Time: <span id="order-item-time-id-${id}">${value.quantity * value.time + 's'}</span></strong>
+                <button class ="btn btn-outline-danger" onclick="deleteItem(${value.id})"> <i class ="fa fa-trash"></i> </button>
+            </div>
+        `;
             $('#item-order').append(tag);
         }
 
         function deleteItem(id) {
-            console.log("delete = ", id);
+            let value = order.filter((d) =>d.id === id)[0];
+            if (value) {
+                if (value.quantity > 1) {
+                    order = order.map((val) => {
+                        val.quantity = val.quantity - 1;
+                        return val;
+                    });
+                    updateOrder(id);
+                } else {
+                    let itemDelete = `#item-order-id-${id}`;
+                    order = order.filter((d) => d.id !== id);
+                    $(itemDelete).remove();
+                }
+            }
         }
+
+        function showTime(time){
+            $('#time-dispatching-id').text(`Time: ${time}`);
+        }
+
+
+        async function dispatchOrder(){
+            creating = true;
+            for (let i = 0; i < order.length; i++) {
+                let val = order[i];
+                let time =val.time*val.quantity;
+                let count = 0;
+                showTime(time);
+                for(let j=0; j < val.quantity; j++){
+                    $('#dispatching-id').text(`Dispaging: ${val.name} ${j+1} of ${val.quantity}`);
+                    console.log(val);
+                    for (let k = 0; k < val.time; k++){
+                        count += 1;
+                        await waitOneSecond();
+                        showTime(time-count);
+                    }
+                    //const result = await resolveAfter(val);
+                }
+                let itemDelete = `#item-order-id-${val.id}`;
+                $(itemDelete).remove();
+            }
+            creating = false;
+            dispatched = [...dispatched, ...order];
+            order = [];
+        }
+
+        function resolveAfter(value) {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    resolve('resolved');
+                }, value.time*1000);
+            });
+        }
+
+        function waitOneSecond() {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    console.log("Second pass");
+                    resolve('resolved');
+                }, 1000);
+            });
+        }
+
+
 
     </script>
 }
