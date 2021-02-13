@@ -13,13 +13,13 @@
     width: 100%;
 }
 
-.images{
+.images, your-order{
     display: flex;
     flex-direction: column;
     max-width: 30%;
 }
 
-.vending, your-order{
+.vending, order{
     display: flex;
     flex-direction: column;
     width: 70%;
@@ -40,3 +40,11 @@
     padding-bottom: 10px;
 }
 
+.item-order{
+    display: flex;
+    flex-direction: row;
+}
+
+.item-order strong{
+    min-width: 80%;
+}

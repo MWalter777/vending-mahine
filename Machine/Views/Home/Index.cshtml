@@ -3,32 +3,95 @@
 }
 
 <div class="machine">
-    <div class="images">
-        <div class="vending">
-            <img src="https://userscontent2.emaze.com/images/bc6288eb-5280-4ad6-bee9-198faa85ab48/6dd8cd2ebc272b5907a97c2a6d94b5fc.png" alt="Cocacola" />
-            <strong>Cocacola $1.5</strong>
-            <button class="btn btn-outline-primary">Add</button>
-        </div>
-        <div class="vending">
-            <img src="https://images.vexels.com/media/users/3/190236/isolated/preview/9a2eb2186a42d9d0d802596a43aa7d43-papas-fritas-kawaii-planas-by-vexels.png" alt="Potatoes" />
-            <strong>Potatoes $0.5</strong>
-            <button class="btn btn-outline-primary">Add</button>
-        </div>
-        <div class="vending">
-            <img src="https://lh3.googleusercontent.com/proxy/MrgNQlqJ35lQO50qbv1TxWm5vnORKyf34IRBdG4rVj0bhQbCO-lr-CNuW-xfZTDJGbkN1daXUECx_LBsE50RGEoto_Fi51W5QJfgpCAvbrm1iuT2wYzPGBc-QNQ" alt="coffe" />
-            <strong>Coffe $1.2</strong>
-            <button class="btn btn-outline-primary">Add</button>
-        </div>
+    <div class="images" id="items-vending">
     </div>
 
     <div class="your-order">
         <div class="order-title">
             <h3 class="text-center">Your order</h3>
         </div>
-        <div class="order">
-            <img src="https://userscontent2.emaze.com/images/bc6288eb-5280-4ad6-bee9-198faa85ab48/6dd8cd2ebc272b5907a97c2a6d94b5fc.png" alt="Cocacola" />
-            <strong>$1.5</strong>
-            <button class="btn btn-outline-primary">Add</button>
+        <div class="order" id="item-order">
         </div>
     </div>
 </div>
+
+@section scripts {
+    <script>
+        var order = [];
+        var data = [
+            {
+                id: 1,
+                image: "https://userscontent2.emaze.com/images/bc6288eb-5280-4ad6-bee9-198faa85ab48/6dd8cd2ebc272b5907a97c2a6d94b5fc.png",
+                name: "Cocacola",
+                price: 1.5,
+                time: 2000
+            },
+            {
+                id: 2,
+                image: "https://images.vexels.com/media/users/3/190236/isolated/preview/9a2eb2186a42d9d0d802596a43aa7d43-papas-fritas-kawaii-planas-by-vexels.png",
+                name: "Potatoes",
+                price: 0.5,
+                time: 5000
+            },
+            {
+                id: 3,
+                image: "https://lh3.googleusercontent.com/proxy/MrgNQlqJ35lQO50qbv1TxWm5vnORKyf34IRBdG4rVj0bhQbCO-lr-CNuW-xfZTDJGbkN1daXUECx_LBsE50RGEoto_Fi51W5QJfgpCAvbrm1iuT2wYzPGBc-QNQ",
+                name: "Coffe",
+                price: 1.2,
+                time: 7000
+            },
+        ];
+
+
+        $(document).ready(function () {
+            createMachine();
+        });
+
+        function createMachine() {
+            var items = ``;
+            for (let i = 0; i < data.length; i++) {
+                let tag = `
+                        <div class ="vending">
+                            <img src="${data[i].image}" alt="${data[i].name}" />
+                            <strong>${data[i].name} ${'$'+data[i].price}</strong>
+                            <button class ="btn btn-outline-primary" onclick="orderItem(${data[i].id})">Add</button>
+                        </div>
+                `;
+                $('#items-vending').append(tag);
+            }
+        }
+
+        function orderItem(id) {
+            let orderI = order.filter((d)=>d.id === id)[0];
+            let value = data.filter((d) =>d.id === id)[0];
+            if (orderI) {
+                console.log(orderI);
+            } else {
+                let obj = {
+                    id: orderI.id,
+                    name: orderI.name,
+                    quantity: 1,
+                    time: orderI.time,
+                    price: orderI.price
+                };
+                order.push(obj);
+            }
+        }
+
+        function createOrder(id) {
+            console.log(value);
+            let tag = `
+                <div class ="item-order">
+                    <strong>${value.name} ${'$' + value.price}</strong>
+                    <button class ="btn btn-outline-danger" onclick="deleteItem(${value.id})"> <i class ="fa fa-trash"></i> </button>
+                </div>
+            `;
+            $('#item-order').append(tag);
+        }
+
+        function deleteItem(id) {
+            console.log("delete = ", id);
+        }
+
+    </script>
+}
