@@ -2,24 +2,31 @@
     ViewBag.Title = "Vending machine";
 }
 
-<div class="machine">
-    <div class="images" id="items-vending">
+<div class="wrapper-machine">
+    <div class="machine">
+        <div class="images" id="items-vending">
+        </div>
+        <div class="your-order">
+            <div class="order-title">
+                <h3 class="text-center">Your order</h3>
+            </div>
+            <div class="order">
+                <div class="item-suborder" id="item-order">
+                </div>
+                <button class="btn btn-outline-success" onclick="dispatchOrder()">Create</button>
+            </div>
+            <div class="dispatching" id="dispatching">
+                <div id="load"></div>
+                <strong>Dispaching</strong>
+                <strong id="dispatching-id">Dispaching id</strong>
+                <strong id="time-dispatching-id">Time: </strong>
+            </div>
+        </div>
     </div>
 
-    <div class="your-order">
-        <div class="order-title">
-            <h3 class="text-center">Your order</h3>
-        </div>
-        <div class="order">
-            <div class="order" id="item-order">
-            </div>
-            <button class="btn btn-outline-success" onclick="dispatchOrder()">Create</button>
-        </div>
-        <div class="dispatching" id="dispatching">
-            <div id="load"></div>
-            <strong>Dispaching</strong>
-            <strong id="dispatching-id">Dispaching id</strong>
-            <strong id="time-dispatching-id">Time: </strong>
+    <div class="dispatched">
+        <h2 class="text-center">Dispatched</h2>
+        <div id="all-dispached">
         </div>
     </div>
 </div>
@@ -46,7 +53,7 @@
             },
             {
                 id: 3,
-                image: "https://lh3.googleusercontent.com/proxy/MrgNQlqJ35lQO50qbv1TxWm5vnORKyf34IRBdG4rVj0bhQbCO-lr-CNuW-xfZTDJGbkN1daXUECx_LBsE50RGEoto_Fi51W5QJfgpCAvbrm1iuT2wYzPGBc-QNQ",
+                image: "https://pngimg.com/uploads/mug_coffee/mug_coffee_PNG16839.png",
                 name: "Coffe",
                 price: 1.2,
                 time: 7
@@ -170,7 +177,9 @@
             }
             creating = false;
             $('#load').hide();
-            dispatched = [...dispatched, ...order];
+            let newOrderDispached = {time: new Date(), data: [...order]};
+            createOrderDispached(newOrderDispached);
+            dispatched = [...dispatched, newOrderDispached];
             order = [];
         }
 
@@ -189,6 +198,29 @@
                     resolve('resolved');
                 }, 1000);
             });
+        }
+
+        function createOrderDispached(value){
+            let newId = `dispatched-item-id-${value.time}`;
+            let item = ``;
+            let date = value.time.toLocaleDateString();
+            for (let i = 0; i < value.data.length; i++){
+                item += `
+                    <div class="item-order">
+                        <strong>${value.data[i].name}</strong>
+                        <strong>Quantity: ${value.data[i].quantity}</strong>
+                    </div>
+                    `;
+            }
+            let items = `
+                    <div class="dispatched-item" id="${newId}">
+                        <h4>Dispached at: ${date}</h4>
+                        <div class="item-order-dispached">
+                            ${item}
+                        </div>
+                    </div>
+                `;
+            $('#all-dispached').append(items);
         }
 
 
