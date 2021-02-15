@@ -169,14 +169,23 @@ function createOrderDispached(value){
     let newId = `dispatched-item-id-${value.time}`;
     let item = ``;
     let date = value.time.toLocaleDateString();
+    let total = 0;
     for (let i = 0; i < value.data.length; i++){
+        let subTotal = value.data[i].quantity * value.data[i].price;
+        total += subTotal;
         item += `
                     <div class="item-order">
                         <strong>${value.data[i].name}</strong>
-                        <strong>Quantity: ${value.data[i].quantity}</strong>
+                        <strong>${value.data[i].quantity}x${value.data[i].price}=$ ${subTotal} </strong>
                     </div>
                     `;
     }
+    item += `
+                    <div class="item-order">
+                        <strong><h3>Total</h3></strong>
+                        <strong><h3>${total}</h3></strong>
+                    </div>
+                    `;
     let items = `
                     <div class="dispatched-item" id="${newId}">
                         <h4>Dispached at: ${date}</h4>
